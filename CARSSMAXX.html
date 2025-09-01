@@ -1,0 +1,356 @@
+<html>
+<head>
+    <title>CAR VIEW MAX</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            overflow-x: hidden;
+        }
+        
+        /* Menu Bar - Elegant gradient with subtle animation */
+        .menu-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 70px; /* Slightly taller for elegance */
+            background: linear-gradient(135deg, #1a2a6c 0%, #b21f1f 50%, #fdbb2d 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .menu-item {
+            color: white;
+            text-decoration: none;
+            padding: 15px 30px;
+            margin: 0 10px;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            border-radius: 5px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+        
+        .menu-item:hover {
+            background-color: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Home View - Kept as is since it has video background */
+        #home-view {
+            position: fixed;
+            top: 70px; /* Adjusted for taller menu bar */
+            left: 0;
+            width: 100%;
+            height: calc(100vh - 70px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        #video-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+        
+        #welcome-text {
+            color: white;
+            font-size: 5em;
+            font-style: italic;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.8);
+        }
+        
+        /* Cars View - Elegant dark theme with accent colors */
+        #cars-view {
+            position: fixed;
+            top: 70px;
+            left: 0;
+            width: 100%;
+            height: calc(100vh - 70px);
+            display: none;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-content: flex-start;
+            gap: 30px; /* Increased gap for better spacing */
+            padding: 40px;
+            overflow-y: auto;
+            background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
+        }
+        
+        .car-container {
+            position: relative;
+            width: 320px; /* Slightly wider */
+            height: 220px; /* Slightly taller */
+            overflow: hidden;
+            border-radius: 12px; /* More rounded corners */
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .car-container:hover {
+            transform: scale(1.05) translateY(-5px);
+            z-index: 100;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+            border-color: rgba(255, 215, 0, 0.3);
+        }
+        
+        .car-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        
+        .car-video-preview {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+        
+        .car-container:hover .car-video-preview {
+            opacity: 1;
+        }
+        
+        .car-title {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+            color: white;
+            font-size: 1.3em;
+            text-align: center;
+            font-weight: bold;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        
+        /* Contact View - Sophisticated light/dark theme */
+        #contact-view {
+            position: fixed;
+            top: 70px;
+            left: 0;
+            width: 100%;
+            height: calc(100vh - 70px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+        
+        .contact-form {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 550px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .contact-form h2 {
+            margin-bottom: 25px;
+            text-align: center;
+            color: #2c3e50;
+            font-size: 2em;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #7f8c8d;
+            font-size: 0.9em;
+            letter-spacing: 0.5px;
+        }
+        
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            color: #333;
+            font-size: 1em;
+            transition: all 0.3s ease;
+        }
+        
+        .form-group input:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #3498db;
+            background-color: white;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+        
+        .form-group textarea {
+            height: 140px;
+            resize: vertical;
+        }
+        
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(to right, #1a2a6c, #b21f1f);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-weight: 500;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .submit-btn:hover {
+            background: linear-gradient(to right, #16245e, #9e1b1b);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Show/hide logic using :target */
+        #cars-view:target {
+            display: flex;
+        }
+        
+        #cars-view:target ~ #home-view,
+        #cars-view:target ~ #contact-view {
+            display: none;
+        }
+        
+        #contact-view:target {
+            display: flex;
+        }
+        
+        #contact-view:target ~ #home-view,
+        #contact-view:target ~ #cars-view {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Menu Bar -->
+    <nav class="menu-bar">
+        <a href="#home-view" class="menu-item">Home</a>
+        <a href="#cars-view" class="menu-item">Cars View</a>
+        <a href="#contact-view" class="menu-item">Contact</a>
+    </nav>
+    
+    <!-- Cars View -->
+    <div id="cars-view">
+        <div class="car-container">
+            <img src="C:\Users\gajul\Downloads\BMW.jpg" alt="BMW" class="car-image">
+            <video class="car-video-preview" autoplay loop muted>
+                <source src="C:\Users\gajul\Downloads\bmwv.mp4" type="video/mp4">
+            </video>
+            <div class="car-title">BMW</div>
+        </div>
+        
+        <div class="car-container">
+            <img src="C:\Users\gajul\Downloads\BENZ.jpg" alt="Vintage Car" class="car-image">
+            <video class="car-video-preview" autoplay loop muted>
+                <source src="C:\Users\gajul\Downloads\benzv.mp4" type="video/mp4">
+            </video>
+            <div class="car-title">MERCEDES-BENZ</div>
+        </div>
+        
+        <div class="car-container">
+            <img src="C:\Users\gajul\Downloads\AUDI.jpg" alt="Red Sports Car" class="car-image">
+            <video class="car-video-preview" autoplay loop muted>
+                <source src="C:\Users\gajul\Downloads\audiv.mp4" type="video/mp4">
+            </video>
+            <div class="car-title">AUDI</div>
+        </div>
+        
+        <div class="car-container">
+            <img src="C:\Users\gajul\Downloads\THAR.jpg" alt="Porsche" class="car-image">
+            <video class="car-video-preview" autoplay loop muted>
+                <source src="C:\Users\gajul\Downloads\tharv.mp4" type="video/mp4">
+            </video>
+            <div class="car-title">THAR</div>
+        </div>
+        
+        <div class="car-container">
+            <img src="C:\Users\gajul\OneDrive\Pictures\Screenshots\Screenshot (64).png" alt="Car Dashboard" class="car-image">
+            <video class="car-video-preview" autoplay loop muted>
+                <source src="C:\Users\gajul\Downloads\ferrariv.mp4" type="video/mp4">
+            </video>
+            <div class="car-title">FERRARI</div>
+        </div>
+        
+        <div class="car-container">
+            <img src="C:\Users\gajul\OneDrive\Pictures\Screenshots\Screenshot (65).png" alt="Mountain Road" class="car-image">
+            <video class="car-video-preview" autoplay loop muted>
+                <source src="C:\Users\gajul\Downloads\lambov.mp4" type="video/mp4">
+            </video>
+            <div class="car-title">LAMBHORGINI</div>
+        </div>
+    </div>
+    
+    <!-- Contact View -->
+    <div id="contact-view">
+        <div class="contact-form">
+            <h2>Contact Us</h2>
+            <form>
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="subject">Subject</label>
+                    <input type="text" id="subject">
+                </div>
+                <div class="form-group">
+                    <label for="message">Message</label>
+                    <textarea id="message" required></textarea>
+                </div>
+                <button type="submit" class="submit-btn">Send Message</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Home View (default view) -->
+    <div id="home-view">
+        <video id="video-background" autoplay loop muted>
+            <source src="C:\Users\gajul\Downloads\carvideo.mp4" type="video/mp4">
+        </video>
+        <h1 id="welcome-text">Welcome</h1>
+    </div>
+</body>
+</html>
